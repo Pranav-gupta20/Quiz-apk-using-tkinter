@@ -1,36 +1,155 @@
+import tkinter as tk
+from tkinter import messagebox
+import random
+quiz = [
+    {
+        "question": "What is the capital of France?",
+        "options": ["Paris", "London", "Berlin", "Rome"],
+        "answer": "Paris"
+    },
+    {
+        "question": "Which planet is known as the Red Planet?",
+        "options": ["Earth", "Mars", "Jupiter", "Saturn"],
+        "answer": "Mars"
+    },
+    {
+        "question": "Who was the first President of India?",
+        "options": ["Jawaharlal Nehru", "Mahatma Gandhi", "Rajendra Prasad", "Sardar Patel"],
+        "answer": "Rajendra Prasad"
+    },
+    {
+        "question": "Which is the largest continent by area?",
+        "options": ["Africa", "Asia", "Europe", "North America"],
+        "answer": "Asia"
+    },
+    {
+        "question": "Which planet is known as the 'Morning Star'?",
+        "options": ["Mars", "Venus", "Jupiter", "Mercury"],
+        "answer": "Venus"
+    },
+    {
+        "question": "Who wrote the national anthem of India?",
+        "options": ["Rabindranath Tagore", "Bankim Chandra Chatterjee", "Subhash Chandra Bose", "Sarojini Naidu"],
+        "answer": "Rabindranath Tagore"
+    },
+    {
+        "question": "Which is the longest river in the world?",
+        "options": ["Amazon River", "Nile River", "Yangtze River", "Mississippi River"],
+        "answer": "Nile River"
+    },
+    {
+        "question": "Who is known as the Father of the Indian Constitution?",
+        "options": ["Mahatma Gandhi", "B.R. Ambedkar", "Jawaharlal Nehru", "Sardar Patel"],
+        "answer": "B.R. Ambedkar"
+    },
+    {
+        "question": "Which Indian city is also known as the 'Silicon Valley of India'?",
+        "options": ["Mumbai", "Hyderabad", "Bangalore", "Pune"],
+        "answer": "Bangalore"
+    },
+    {
+        "question": "In which year did India gain independence from British rule?",
+        "options": ["1945", "1946", "1947", "1948"],
+        "answer": "1947"
+    },
+    {
+        "question": "Which is the smallest country in the world by area?",
+        "options": ["Monaco", "Vatican City", "Nauru", "San Marino"],
+        "answer": "Vatican City"
+    },
+    {
+        "question": "What is the capital of Japan?",
+        "options": ["Kyoto", "Osaka", "Tokyo", "Hiroshima"],
+        "answer": "Tokyo"
 
-🧠 Quiz Application using Python Tkinter
-This is a multiple-choice quiz application built using Python's tkinter module. It displays general knowledge questions to the user, who can select one answer from four options. After answering all questions, the app shows the final score.
+    }
+    
 
-💡 Key Features:
-User Interface:
-Designed using tkinter, the GUI has a colorful layout with questions, options, and navigation.
 
-Question Shuffling:
-The questions are randomized using random.shuffle() each time the quiz is started.
+]
+class QuizApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Quiz Application")
+        self.root.configure(bg="skyblue")  # Background color of the window
+        
+        # to Shuffle the quiz questions
+        random.shuffle(quiz)
+        
+        self.score = 0
+        self.current_question = 0
 
-Answer Selection:
-Users select answers using radio buttons. A warning pops up if they try to proceed without choosing an option.
+        # Create UI elements
+        self.question_label = tk.Label(
+            root, 
+            text=quiz[self.current_question]["question"], 
+            font=("Arial", 14), 
+            bg="lightblue",  # Background color of the question label
+            fg="darkblue"    # Text color of the question label
+        )
+        self.question_label.pack(pady=20)
 
-Score Calculation:
-Each correct answer increases the score by one. At the end, the total score is shown using a message box.
+        self.var = tk.StringVar()
 
-Questions Included:
-Topics include general knowledge, such as geography, history, and science.
+        self.option_buttons = []
+        for i in range(4):
+            btn = tk.Radiobutton(
+                root, 
+                text="", 
+                variable=self.var, 
+                value="", 
+                font=("Arial", 12),
+                bg="lightyellow",  # Background color of the option buttons
+                fg="black",        # Text color of the option buttons
+                activebackground="yellow",  # Background color when the button is active
+                activeforeground="blue"     # Text color when the button is active
+            )
+            btn.pack(anchor="w", pady=10)
+            self.option_buttons.append(btn)
 
-🧩 How It Works:
-Launch App: The main window is created with a title and background.
+        self.next_button = tk.Button(
+            root, 
+            text="Next", 
+            command=self.next_question, 
+            bg="green",      # Background color of the Next button
+            fg="white",      # Text color of the Next button
+            activebackground="darkgreen",  # Background color when the button is active
+            activeforeground="grey"       # Text color when the button is active
+        )
+        self.next_button.pack(pady=20)
 
-Display Questions: One question is shown at a time with four radio button options.
+        self.update_question()
 
-Next Button: Takes the user to the next question or shows the result when the quiz ends.
+    def update_question(self):
+        self.question_label.config(text=quiz[self.current_question]["question"])
+        options = quiz[self.current_question]["options"]
+        self.var.set(None)
 
-Final Result: A message box displays the score like Your Score: 7/12.
+        for i in range(4):
+            self.option_buttons[i].config(text=options[i], value=options[i])
 
-🛠️ Technologies Used:
-tkinter – for GUI
+    def next_question(self):
+        if self.var.get() == "":
+            messagebox.showwarning("Warning", "Please select an option.")
+            return
 
-random – to shuffle questions
+        if self.var.get() == quiz[self.current_question]["answer"]:
+            self.score += 1
 
-messagebox – to show warnings and results
+        self.current_question += 1
+
+        if self.current_question == len(quiz):
+            self.show_result()
+        else:
+            self.update_question()
+
+    def show_result(self):
+        messagebox.showinfo("Result", f"Your Score: {self.score}/{len(quiz)}")
+        self.root.quit()
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = QuizApp(root)
+    root.mainloop()
+    
+
 
